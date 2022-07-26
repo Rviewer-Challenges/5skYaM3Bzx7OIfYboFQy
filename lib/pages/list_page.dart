@@ -1,6 +1,6 @@
 import 'package:cookgator/database/database.dart';
 import 'package:cookgator/providers/feed_provider.dart';
-import 'package:cookgator/settings_page.dart';
+import 'package:cookgator/pages/settings_page.dart';
 import 'package:cookgator/ui/fav_icon.dart';
 import 'package:cookgator/ui/feed_item_view.dart';
 import 'package:flutter/material.dart';
