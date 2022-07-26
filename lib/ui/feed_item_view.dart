@@ -1,5 +1,6 @@
-import 'package:cookgator/models/feed_item.dart';
+import 'package:cookgator/database/database.dart';
 import 'package:cookgator/providers/feed_provider.dart';
+import 'package:cookgator/ui/fav_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -21,12 +22,11 @@ class FeedItemView extends StatelessWidget {
   }
 
   Card _withImage(BuildContext context) {
-    var dateTime = DateTime.parse(item.date!);
-    var timeAgo = timeago.format(dateTime);
+    var timeAgo = timeago.format(item.date);
 
     var heading = item.title;
     var subheading = "By ${item.author} - ${item.publisher}";
-    var cardImage = NetworkImage("https://corsproxy.io/?${item.thumbnailUrl!}");
+    var cardImage = NetworkImage("https://corsproxy.io/?${item.thumbnailUrl}");
     var supportingText = "Published $timeAgo on ${item.source}";
 
     return Card(
@@ -41,9 +41,7 @@ class FeedItemView extends StatelessWidget {
                 var provider = context.read<FeedProvider>();
                 provider.toggleFavorite(item);
               },
-              child: Icon(
-                item.isFav ? Icons.favorite_outlined : Icons.favorite_outline,
-              ),
+              child: FavIcon(isFav: item.isFav),
             ),
           ),
           SizedBox(
@@ -56,16 +54,11 @@ class FeedItemView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16.0),
             alignment: Alignment.centerLeft,
-            child: Text(supportingText),
+            child: Text(
+              supportingText,
+              style: Theme.of(context).textTheme.caption,
+            ),
           ),
-          ButtonBar(
-            children: [
-              TextButton(
-                child: const Text('View'),
-                onPressed: () {},
-              )
-            ],
-          )
         ],
       ),
     );

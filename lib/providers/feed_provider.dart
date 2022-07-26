@@ -1,5 +1,6 @@
-import 'package:cookgator/models/feed_item.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'dart:convert';
+
+import 'package:cookgator/database/database.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,11 +13,14 @@ class FeedProvider {
   };
   static const boxName = "feed_items";
 
-  FeedProvider() {
+  final MyDatabase db;
+
+  FeedProvider() : db = MyDatabase() {
     _load();
   }
 
   _load() async {
+    // await db.clear();
     feedsUrl.forEach((key, value) async => await _sync(key, value));
   }
 
@@ -25,7 +29,8 @@ class FeedProvider {
       Uri.parse(url),
     );
 
-    var atomFeed = RssFeed.parse(feedResponse.body); // for parsing Atom feed
+    var atomFeed = RssFeed.parse(
+        utf8.decode(feedResponse.bodyBytes)); // for parsing Atom feed
 
     atomFeed.items?.forEach((item) {
       _save(item, source);
@@ -33,26 +38,24 @@ class FeedProvider {
   }
 
   void _save(RssItem item, String source) {
-    var feedItem = FeedItem()
-      ..id = item.guid.or("")
-      ..title = item.title.or("Unknown Title")
-      ..link = item.link.or("")
-      ..date = item.pubDate?.toString().or("")
-      ..description = item.description.or("")
-      ..author = item.dc?.creator ?? 'Anonymous'
-      ..publisher = item.dc?.publisher
-      ..thumbnailUrl = item.media?.thumbnails?.first.url
-      ..source = source;
+    var feedItem = FeedItem(
+      id: item.guid.or(""),
+      title: item.title.or("Unknown Title"),
+      link: item.link.or(""),
+      date: item.pubDate!,
+      description: item.description.or(""),
+      author: item.dc?.creator ?? 'Anonymous',
+      publisher: item.dc?.publisher,
+      thumbnailUrl: item.media?.thumbnails?.first.url,
+      source: source,
+      isFav: false,
+    );
 
-    var items = Hive.box<FeedItem>(boxName);
-    if (items.values.where((element) => element.id == item.guid).isEmpty) {
-      items.add(feedItem);
-    }
+    db.addFeedItem(feedItem);
   }
 
   void toggleFavorite(FeedItem item) {
-    item.isFav = !item.isFav;
-    item.save();
+    db.toggleFavorite(item.copyWith(isFav: !item.isFav));
   }
 }
 

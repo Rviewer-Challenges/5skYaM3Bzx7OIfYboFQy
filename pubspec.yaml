@@ -29,27 +29,29 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
+  cupertino_icons: ^1.0.5
+  drift: ^1.7.1
+  sqlite3_flutter_libs: ^0.5.8
+  path_provider: ^2.0.11
+  path: ^1.8.1
   flutter_hooks: ^0.18.5+1
   webfeed: ^0.7.0
   provider: ^6.0.3
   timeago: ^3.2.2
-  http:
+  http: ^0.13.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  hive_generator: ^1.1.3
-  build_runner:
+  drift_dev: ^1.7.0
+  build_runner: ^2.2.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
