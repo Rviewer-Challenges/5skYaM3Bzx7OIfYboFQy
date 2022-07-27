@@ -1,4 +1,3 @@
-import 'package:cookgator/database/database.dart';
 import 'package:cookgator/models/feed_item_with_source.dart';
 import 'package:cookgator/pages/detail_page.dart';
 import 'package:cookgator/providers/feed_provider.dart';
@@ -19,6 +18,11 @@ class ListPage extends HookWidget {
     var provider = context.watch<FeedProvider>();
     var onlyFavorite = useState(false);
     var entries = useFuture(provider.db.newestFeedItems(onlyFavorite.value));
+    useOnAppLifecycleStateChange((previous, current) {
+      if (current == AppLifecycleState.resumed) {
+        provider.refresh();
+      }
+    });
 
     return Scaffold(
         appBar: AppBar(
@@ -46,32 +50,37 @@ class ListPage extends HookWidget {
           ],
         ),
         body: entries.hasData
-            ? _list(entries.data!)
+            ? _list(entries.data!, provider)
             : const Center(child: CircularProgressIndicator()));
   }
 
-  Widget _list(List<FeedItemWithSource> entries) {
-    return ListView.builder(
-      itemCount: entries.length,
-      itemBuilder: (context, index) {
-        var item = entries[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: FeedItemView(
-            item: item,
-            onTap: (item) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => DetailPage(
-                    item: item,
-                  ),
-                ),
-              );
-            },
-          ),
-        );
+  Widget _list(List<FeedItemWithSource> entries, FeedProvider provider) {
+    return RefreshIndicator(
+      onRefresh: () {
+        return provider.refresh();
       },
+      child: ListView.builder(
+        itemCount: entries.length,
+        itemBuilder: (context, index) {
+          var item = entries[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: FeedItemView(
+              item: item,
+              onTap: (item) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => DetailPage(
+                      item: item,
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

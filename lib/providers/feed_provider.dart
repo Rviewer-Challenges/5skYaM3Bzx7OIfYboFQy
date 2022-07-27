@@ -11,6 +11,10 @@ class FeedProvider {
     _load();
   }
 
+  Future<void> refresh() async {
+    await _load();
+  }
+
   _load() async {
     // await db.clear();
     var sources = await db.getEnabledSources();

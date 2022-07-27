@@ -98,8 +98,8 @@ Remember that **there is no countdown**, so take your time and implement a solut
 
 ### TODO
 
-[ ] The news list can be reloaded to show new news.
-[ ] The news list will be updated automatically if the App/Web returns from running in the background. If you are working on a web application you can just update the feed every 60 seconds if there is any change on your sources.
+[X] The news list can be reloaded to show new news.
+[X] The news list will be updated automatically if the App/Web returns from running in the background. If you are working on a web application you can just update the feed every 60 seconds if there is any change on your sources.
 
 Detail screen
 
