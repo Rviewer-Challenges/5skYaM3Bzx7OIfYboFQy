@@ -1,4 +1,3 @@
-import 'package:cookgator/database/database.dart';
 import 'package:cookgator/models/feed_item_with_source.dart';
 import 'package:cookgator/providers/feed_provider.dart';
 import 'package:cookgator/ui/fav_icon.dart';
@@ -15,52 +14,50 @@ class DetailPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    var provider = context.read<FeedProvider>();
     var timeAgo = timeago.format(item.item.date);
     var heading = item.item.title;
     var subheading = "By ${item.item.author} - ${item.item.publisher}";
     var cardImage =
         NetworkImage("https://corsproxy.io/?${item.item.thumbnailUrl}");
     var supportingText = "Published $timeAgo on ${item.source.name}";
+    var itemChanges = useStream(provider.db.watchFeedItem(item));
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
-        title: Container(
-          color: Colors.black.withAlpha(100),
-          child: ListTile(
-            title: Text(
-              heading,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.white),
-            ),
-            subtitle: Text(
-              subheading,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleSmall
-                  ?.copyWith(color: Colors.white),
-            ),
-          ),
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(image: cardImage, fit: BoxFit.cover),
-          ),
-        ),
+        title: Text(subheading),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          ListTile(
+            title: Text(heading),
+            trailing: InkWell(
+              onTap: () {
+                var provider = context.read<FeedProvider>();
+                provider.toggleFavorite(itemChanges.data ?? item.item);
+              },
+              child: FavIcon(isFav: itemChanges.data?.isFav ?? item.item.isFav),
+            ),
+          ),
+          SizedBox(
+            height: 200.0,
+            child: Ink.image(
+              image: cardImage,
+              fit: BoxFit.cover,
+            ),
+          ),
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16.0),
               child: Text(item.item.description),
             ),
           ),
-          ElevatedButton(
-            onPressed: _launchUrl,
-            child: const Text("Read more ..."),
+          Center(
+            child: ElevatedButton(
+              onPressed: _launchUrl,
+              child: const Text("Read more ..."),
+            ),
           ),
           Container(
             padding: const EdgeInsets.all(16.0),

@@ -104,6 +104,11 @@ class MyDatabase extends _$MyDatabase {
           ..where((tbl) => tbl.enabled.equalsExp(const Constant(true))))
         .get();
   }
+
+  Stream<FeedItem> watchFeedItem(FeedItemWithSource item) {
+    return (select(feedItems)..where((tbl) => tbl.id.equals(item.item.id)))
+        .watchSingle();
+  }
 }
 
 LazyDatabase _openConnection() {
