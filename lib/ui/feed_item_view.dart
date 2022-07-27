@@ -15,16 +15,6 @@ class FeedItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return item.item.thumbnailUrl == null ? _singleLine() : _withImage(context);
-  }
-
-  Widget _singleLine() {
-    return ListTile(
-      title: Text(item.item.title),
-    );
-  }
-
-  Widget _withImage(BuildContext context) {
     return InkWell(
       onTap: () {
         onTap(item);

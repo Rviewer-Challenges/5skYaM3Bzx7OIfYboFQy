@@ -1,19 +1,17 @@
 // These imports are only needed to open the database
-import 'dart:io';
 
 import 'package:cookgator/database/feed_items.dart';
 import 'package:cookgator/database/feed_source.dart';
 import 'package:cookgator/models/feed_item_with_source.dart';
-import 'package:drift/native.dart';
 import 'package:drift/drift.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
+
+export 'database/shared.dart';
 
 part 'database.g.dart';
 
 @DriftDatabase(tables: [FeedItems, FeedSources])
 class MyDatabase extends _$MyDatabase {
-  MyDatabase() : super(_openConnection());
+  MyDatabase(QueryExecutor e) : super(e);
 
   @override
   int get schemaVersion => 1;
@@ -111,15 +109,15 @@ class MyDatabase extends _$MyDatabase {
   }
 }
 
-LazyDatabase _openConnection() {
-  // the LazyDatabase util lets us find the right location for the file async.
-  return LazyDatabase(
-    () async {
-      // put the database file, called db.sqlite here, into the documents folder
-      // for your app.
-      final dbFolder = await getApplicationDocumentsDirectory();
-      final file = File(p.join(dbFolder.path, 'db.sqlite'));
-      return NativeDatabase(file);
-    },
-  );
-}
+// LazyDatabase _openConnection() {
+//   // the LazyDatabase util lets us find the right location for the file async.
+//   return LazyDatabase(
+//     () async {
+//       // put the database file, called db.sqlite here, into the documents folder
+//       // for your app.
+//       final dbFolder = await getApplicationDocumentsDirectory();
+//       final file = File(p.join(dbFolder.path, 'db.sqlite'));
+//       return NativeDatabase(file);
+//     },
+//   );
+// }

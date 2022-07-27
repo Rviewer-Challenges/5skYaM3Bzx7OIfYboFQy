@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class FeedProvider {
   final MyDatabase db;
 
-  FeedProvider() : db = MyDatabase() {
+  FeedProvider() : db = constructDb(logStatements: true) {
     _load();
   }
 
