@@ -1,4 +1,5 @@
 import 'package:cookgator/database/database.dart';
+import 'package:cookgator/models/feed_item_with_source.dart';
 import 'package:cookgator/providers/feed_provider.dart';
 import 'package:cookgator/ui/fav_icon.dart';
 import 'package:flutter/material.dart';
@@ -8,17 +9,18 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends HookWidget {
-  final FeedItem item;
+  final FeedItemWithSource item;
 
   const DetailPage({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var timeAgo = timeago.format(item.date);
-    var heading = item.title;
-    var subheading = "By ${item.author} - ${item.publisher}";
-    var cardImage = NetworkImage("https://corsproxy.io/?${item.thumbnailUrl}");
-    var supportingText = "Published $timeAgo on ${item.source}";
+    var timeAgo = timeago.format(item.item.date);
+    var heading = item.item.title;
+    var subheading = "By ${item.item.author} - ${item.item.publisher}";
+    var cardImage =
+        NetworkImage("https://corsproxy.io/?${item.item.thumbnailUrl}");
+    var supportingText = "Published $timeAgo on ${item.source.name}";
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +55,7 @@ class DetailPage extends HookWidget {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16.0),
-              child: Text(item.description),
+              child: Text(item.item.description),
             ),
           ),
           ElevatedButton(
@@ -74,8 +76,8 @@ class DetailPage extends HookWidget {
   }
 
   Future<void> _launchUrl() async {
-    if (!await launchUrl(Uri.parse(item.link))) {
-      throw 'Could not launch ${item.link}';
+    if (!await launchUrl(Uri.parse(item.item.link))) {
+      throw 'Could not launch ${item.item.link}';
     }
   }
 }

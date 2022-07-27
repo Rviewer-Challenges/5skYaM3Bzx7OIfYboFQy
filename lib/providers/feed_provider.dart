@@ -14,7 +14,6 @@ class FeedProvider {
   _load() async {
     // await db.clear();
     var sources = await db.getEnabledSources();
-    print("Buscando articulos");
     Future.forEach(
       sources,
       (source) async => await _sync(source as FeedSource),
@@ -29,12 +28,12 @@ class FeedProvider {
     var atomFeed = RssFeed.parse(
         utf8.decode(feedResponse.bodyBytes)); // for parsing Atom feed
 
-    atomFeed.items?.forEach((item) {
-      _save(item, source.name);
+    atomFeed.items?.forEach((item) async {
+      await _save(item, source);
     });
   }
 
-  void _save(RssItem item, String source) {
+  Future<void> _save(RssItem item, FeedSource source) async {
     var feedItem = FeedItem(
       id: item.guid.or(""),
       title: item.title.or("Unknown Title"),
@@ -44,11 +43,13 @@ class FeedProvider {
       author: item.dc?.creator ?? 'Anonymous',
       publisher: item.dc?.publisher,
       thumbnailUrl: item.media?.thumbnails?.first.url,
-      source: source,
+      sourceId: source.id,
       isFav: false,
     );
 
-    db.addFeedItem(feedItem);
+    if ((await db.checkIfExists(feedItem)).isEmpty) {
+      db.addFeedItem(feedItem);
+    }
   }
 
   void toggleFavorite(FeedItem item) {

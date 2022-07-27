@@ -17,7 +17,11 @@ class SettingsPage extends HookWidget {
 
     return Column(
       children: [
-        ..._sources(sources, feedProvider),
+        ..._sources(sources, feedProvider, context),
+        Text(
+          "Settings",
+          style: Theme.of(context).textTheme.headline6,
+        ),
         Row(
           children: [
             const SizedBox(width: 16.0),
@@ -37,8 +41,22 @@ class SettingsPage extends HookWidget {
   }
 
   List<Widget> _sources(
-      AsyncSnapshot<List<FeedSource>> sources, FeedProvider feedProvider) {
+    AsyncSnapshot<List<FeedSource>> sources,
+    FeedProvider feedProvider,
+    BuildContext context,
+  ) {
+    if (!sources.hasData) {
+      return [
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ];
+    }
     return [
+      Text(
+        "Sources",
+        style: Theme.of(context).textTheme.headline6,
+      ),
       for (var source in sources.data!)
         Row(
           children: [

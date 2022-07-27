@@ -1,3 +1,5 @@
+import 'package:cookgator/database/database.dart';
+import 'package:cookgator/database/feed_source.dart';
 import 'package:drift/drift.dart';
 
 @DataClassName("FeedItem")
@@ -10,8 +12,9 @@ class FeedItems extends Table {
   TextColumn get author => text()();
   TextColumn get publisher => text().nullable()();
   TextColumn get thumbnailUrl => text().nullable()();
-  TextColumn get source => text()();
   BoolColumn get isFav => boolean().withDefault(const Constant(false))();
+  IntColumn get sourceId =>
+      integer().named("source_id").references(FeedSources, #id)();
 
   @override
   Set<Column> get primaryKey => {id};

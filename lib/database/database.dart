@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cookgator/database/feed_items.dart';
 import 'package:cookgator/database/feed_source.dart';
+import 'package:cookgator/models/feed_item_with_source.dart';
 import 'package:drift/native.dart';
 import 'package:drift/drift.dart';
 import 'package:path_provider/path_provider.dart';
@@ -52,6 +53,11 @@ class MyDatabase extends _$MyDatabase {
     return into(feedItems).insert(feedItem);
   }
 
+  Future<List<FeedItem>> checkIfExists(FeedItem feedItem) {
+    return (select(feedItems)..where((tbl) => tbl.id.equals(feedItem.id)))
+        .get();
+  }
+
   Future toggleFavorite(FeedItem feedItem) {
     return update(feedItems).replace(feedItem);
   }
@@ -64,18 +70,29 @@ class MyDatabase extends _$MyDatabase {
     return delete(feedItems).go();
   }
 
-  Future<List<FeedItem>> newestFeedItems(bool onlyFavorite) {
-    var query = (select(feedItems)
-      ..orderBy([
-        (t) => OrderingTerm(
-              expression: t.date,
-              mode: OrderingMode.desc,
-            )
-      ]));
+  Future<List<FeedItemWithSource>> newestFeedItems(bool onlyFavorite) async {
+    var query = select(feedItems);
     if (onlyFavorite) {
       query = query..where((tbl) => tbl.isFav.equalsExp(const Constant(true)));
     }
-    return query.get();
+    query.orderBy([
+      (t) => OrderingTerm(
+            expression: t.date,
+            mode: OrderingMode.desc,
+          )
+    ]);
+    var join = query.join([
+      leftOuterJoin(feedSources, feedSources.id.equalsExp(feedItems.sourceId))
+    ])
+      ..where(feedSources.enabled.equals(true));
+
+    var typedResultList = await join.get();
+    return typedResultList.map((row) {
+      return FeedItemWithSource(
+        row.readTable(feedItems),
+        row.readTable(feedSources),
+      );
+    }).toList();
   }
 
   Stream<List<FeedSource>> getSources() {

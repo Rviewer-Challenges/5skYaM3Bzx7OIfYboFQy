@@ -1,4 +1,5 @@
 import 'package:cookgator/database/database.dart';
+import 'package:cookgator/models/feed_item_with_source.dart';
 import 'package:cookgator/pages/detail_page.dart';
 import 'package:cookgator/providers/feed_provider.dart';
 import 'package:cookgator/pages/settings_page.dart';
@@ -49,7 +50,7 @@ class ListPage extends HookWidget {
             : const Center(child: CircularProgressIndicator()));
   }
 
-  Widget _list(List<FeedItem> entries) {
+  Widget _list(List<FeedItemWithSource> entries) {
     return ListView.builder(
       itemCount: entries.length,
       itemBuilder: (context, index) {
