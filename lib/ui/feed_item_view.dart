@@ -25,14 +25,6 @@ class FeedItemView extends StatelessWidget {
   }
 
   Widget _withImage(BuildContext context) {
-    var timeAgo = timeago.format(item.item.date);
-
-    var heading = item.item.title;
-    var subheading = "By ${item.item.author} - ${item.item.publisher}";
-    var cardImage =
-        NetworkImage("https://corsproxy.io/?${item.item.thumbnailUrl}");
-    var supportingText = "Published $timeAgo on ${item.source.name}";
-
     return InkWell(
       onTap: () {
         onTap(item);
@@ -42,8 +34,8 @@ class FeedItemView extends StatelessWidget {
         child: Column(
           children: [
             ListTile(
-              title: Text(heading),
-              subtitle: Text(subheading),
+              title: Text(item.heading),
+              subtitle: Text(item.subheading),
               trailing: InkWell(
                 onTap: () {
                   var provider = context.read<FeedProvider>();
@@ -55,7 +47,7 @@ class FeedItemView extends StatelessWidget {
             SizedBox(
               height: 200.0,
               child: Ink.image(
-                image: cardImage,
+                image: item.cardImage,
                 fit: BoxFit.cover,
               ),
             ),
@@ -63,7 +55,7 @@ class FeedItemView extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               alignment: Alignment.centerLeft,
               child: Text(
-                supportingText,
+                item.supportingText,
                 style: Theme.of(context).textTheme.caption,
               ),
             ),

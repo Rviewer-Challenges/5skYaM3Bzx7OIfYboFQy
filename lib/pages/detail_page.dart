@@ -4,7 +4,6 @@ import 'package:cookgator/ui/fav_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends HookWidget {
@@ -15,23 +14,18 @@ class DetailPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var provider = context.read<FeedProvider>();
-    var timeAgo = timeago.format(item.item.date);
-    var heading = item.item.title;
-    var subheading = "By ${item.item.author} - ${item.item.publisher}";
-    var cardImage =
-        NetworkImage("https://corsproxy.io/?${item.item.thumbnailUrl}");
-    var supportingText = "Published $timeAgo on ${item.source.name}";
+
     var itemChanges = useStream(provider.db.watchFeedItem(item));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(subheading),
+        title: Text(item.subheading),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            title: Text(heading),
+            title: Text(item.heading),
             trailing: InkWell(
               onTap: () {
                 var provider = context.read<FeedProvider>();
@@ -43,7 +37,7 @@ class DetailPage extends HookWidget {
           SizedBox(
             height: 200.0,
             child: Ink.image(
-              image: cardImage,
+              image: item.cardImage,
               fit: BoxFit.cover,
             ),
           ),
@@ -63,7 +57,7 @@ class DetailPage extends HookWidget {
             padding: const EdgeInsets.all(16.0),
             alignment: Alignment.centerLeft,
             child: Text(
-              supportingText,
+              item.supportingText,
               style: Theme.of(context).textTheme.caption,
             ),
           ),
