@@ -93,3 +93,14 @@ Remember that **there is no countdown**, so take your time and implement a solut
   <br><br>
   Made with ❤️ by <a href="https://rviewer.io">Rviewer</a>
 </p>
+
+---
+
+### TODO
+
+[ ] The news list can be reloaded to show new news.
+[ ] The news list will be updated automatically if the App/Web returns from running in the background. If you are working on a web application you can just update the feed every 60 seconds if there is any change on your sources.
+
+Detail screen
+
+[ ] The user can add or remove news to a bookmarks list.

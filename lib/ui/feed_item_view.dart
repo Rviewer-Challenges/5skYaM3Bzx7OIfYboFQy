@@ -7,8 +7,10 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class FeedItemView extends StatelessWidget {
   final FeedItem item;
+  final Function(FeedItem) onTap;
 
-  const FeedItemView({Key? key, required this.item}) : super(key: key);
+  const FeedItemView({Key? key, required this.item, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class FeedItemView extends StatelessWidget {
     );
   }
 
-  Card _withImage(BuildContext context) {
+  Widget _withImage(BuildContext context) {
     var timeAgo = timeago.format(item.date);
 
     var heading = item.title;
@@ -29,37 +31,42 @@ class FeedItemView extends StatelessWidget {
     var cardImage = NetworkImage("https://corsproxy.io/?${item.thumbnailUrl}");
     var supportingText = "Published $timeAgo on ${item.source}";
 
-    return Card(
-      elevation: 4.0,
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(heading),
-            subtitle: Text(subheading),
-            trailing: InkWell(
-              onTap: () {
-                var provider = context.read<FeedProvider>();
-                provider.toggleFavorite(item);
-              },
-              child: FavIcon(isFav: item.isFav),
+    return InkWell(
+      onTap: () {
+        onTap(item);
+      },
+      child: Card(
+        elevation: 4.0,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(heading),
+              subtitle: Text(subheading),
+              trailing: InkWell(
+                onTap: () {
+                  var provider = context.read<FeedProvider>();
+                  provider.toggleFavorite(item);
+                },
+                child: FavIcon(isFav: item.isFav),
+              ),
             ),
-          ),
-          SizedBox(
-            height: 200.0,
-            child: Ink.image(
-              image: cardImage,
-              fit: BoxFit.cover,
+            SizedBox(
+              height: 200.0,
+              child: Ink.image(
+                image: cardImage,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              supportingText,
-              style: Theme.of(context).textTheme.caption,
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                supportingText,
+                style: Theme.of(context).textTheme.caption,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -490,11 +490,259 @@ class $FeedItemsTable extends FeedItems
   }
 }
 
+class FeedSource extends DataClass implements Insertable<FeedSource> {
+  final int id;
+  final String name;
+  final String feedURl;
+  final bool enabled;
+  FeedSource(
+      {required this.id,
+      required this.name,
+      required this.feedURl,
+      required this.enabled});
+  factory FeedSource.fromData(Map<String, dynamic> data, {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    return FeedSource(
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
+      feedURl: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}feed_u_rl'])!,
+      enabled: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}enabled'])!,
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['feed_u_rl'] = Variable<String>(feedURl);
+    map['enabled'] = Variable<bool>(enabled);
+    return map;
+  }
+
+  FeedSourcesCompanion toCompanion(bool nullToAbsent) {
+    return FeedSourcesCompanion(
+      id: Value(id),
+      name: Value(name),
+      feedURl: Value(feedURl),
+      enabled: Value(enabled),
+    );
+  }
+
+  factory FeedSource.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FeedSource(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      feedURl: serializer.fromJson<String>(json['feedURl']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'feedURl': serializer.toJson<String>(feedURl),
+      'enabled': serializer.toJson<bool>(enabled),
+    };
+  }
+
+  FeedSource copyWith(
+          {int? id, String? name, String? feedURl, bool? enabled}) =>
+      FeedSource(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        feedURl: feedURl ?? this.feedURl,
+        enabled: enabled ?? this.enabled,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('FeedSource(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('feedURl: $feedURl, ')
+          ..write('enabled: $enabled')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, feedURl, enabled);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FeedSource &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.feedURl == this.feedURl &&
+          other.enabled == this.enabled);
+}
+
+class FeedSourcesCompanion extends UpdateCompanion<FeedSource> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> feedURl;
+  final Value<bool> enabled;
+  const FeedSourcesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.feedURl = const Value.absent(),
+    this.enabled = const Value.absent(),
+  });
+  FeedSourcesCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String feedURl,
+    this.enabled = const Value.absent(),
+  })  : name = Value(name),
+        feedURl = Value(feedURl);
+  static Insertable<FeedSource> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? feedURl,
+    Expression<bool>? enabled,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (feedURl != null) 'feed_u_rl': feedURl,
+      if (enabled != null) 'enabled': enabled,
+    });
+  }
+
+  FeedSourcesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? feedURl,
+      Value<bool>? enabled}) {
+    return FeedSourcesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      feedURl: feedURl ?? this.feedURl,
+      enabled: enabled ?? this.enabled,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (feedURl.present) {
+      map['feed_u_rl'] = Variable<String>(feedURl.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FeedSourcesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('feedURl: $feedURl, ')
+          ..write('enabled: $enabled')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FeedSourcesTable extends FeedSources
+    with TableInfo<$FeedSourcesTable, FeedSource> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FeedSourcesTable(this.attachedDatabase, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      type: const IntType(),
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
+  final VerificationMeta _feedURlMeta = const VerificationMeta('feedURl');
+  @override
+  late final GeneratedColumn<String?> feedURl = GeneratedColumn<String?>(
+      'feed_u_rl', aliasedName, false,
+      type: const StringType(), requiredDuringInsert: true);
+  final VerificationMeta _enabledMeta = const VerificationMeta('enabled');
+  @override
+  late final GeneratedColumn<bool?> enabled = GeneratedColumn<bool?>(
+      'enabled', aliasedName, false,
+      type: const BoolType(),
+      requiredDuringInsert: false,
+      defaultConstraints: 'CHECK (enabled IN (0, 1))',
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns => [id, name, feedURl, enabled];
+  @override
+  String get aliasedName => _alias ?? 'feed_sources';
+  @override
+  String get actualTableName => 'feed_sources';
+  @override
+  VerificationContext validateIntegrity(Insertable<FeedSource> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('feed_u_rl')) {
+      context.handle(_feedURlMeta,
+          feedURl.isAcceptableOrUnknown(data['feed_u_rl']!, _feedURlMeta));
+    } else if (isInserting) {
+      context.missing(_feedURlMeta);
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(_enabledMeta,
+          enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FeedSource map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return FeedSource.fromData(data,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  }
+
+  @override
+  $FeedSourcesTable createAlias(String alias) {
+    return $FeedSourcesTable(attachedDatabase, alias);
+  }
+}
+
 abstract class _$MyDatabase extends GeneratedDatabase {
   _$MyDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   late final $FeedItemsTable feedItems = $FeedItemsTable(this);
+  late final $FeedSourcesTable feedSources = $FeedSourcesTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [feedItems];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [feedItems, feedSources];
 }

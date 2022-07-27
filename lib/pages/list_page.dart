@@ -1,4 +1,5 @@
 import 'package:cookgator/database/database.dart';
+import 'package:cookgator/pages/detail_page.dart';
 import 'package:cookgator/providers/feed_provider.dart';
 import 'package:cookgator/pages/settings_page.dart';
 import 'package:cookgator/ui/fav_icon.dart';
@@ -55,7 +56,19 @@ class ListPage extends HookWidget {
         var item = entries[index];
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: FeedItemView(item: item),
+          child: FeedItemView(
+            item: item,
+            onTap: (item) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => DetailPage(
+                    item: item,
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
     );

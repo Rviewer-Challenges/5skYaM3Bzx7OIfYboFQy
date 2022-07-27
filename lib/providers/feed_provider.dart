@@ -5,14 +5,6 @@ import 'package:webfeed/webfeed.dart';
 import 'package:http/http.dart' as http;
 
 class FeedProvider {
-  static const feedsUrl = {
-    "Recipes at bonappetit.com":
-        "https://www.bonappetit.com/feed/recipes-rss-feed/rss",
-    "Cooking at bonappetit.com":
-        "https://www.bonappetit.com/feed/cooking-rss-feed/rss",
-  };
-  static const boxName = "feed_items";
-
   final MyDatabase db;
 
   FeedProvider() : db = MyDatabase() {
@@ -21,19 +13,24 @@ class FeedProvider {
 
   _load() async {
     // await db.clear();
-    feedsUrl.forEach((key, value) async => await _sync(key, value));
+    var sources = await db.getEnabledSources();
+    print("Buscando articulos");
+    Future.forEach(
+      sources,
+      (source) async => await _sync(source as FeedSource),
+    );
   }
 
-  Future<void> _sync(String source, String url) async {
+  Future<void> _sync(FeedSource source) async {
     var feedResponse = await http.get(
-      Uri.parse(url),
+      Uri.parse(source.feedURl),
     );
 
     var atomFeed = RssFeed.parse(
         utf8.decode(feedResponse.bodyBytes)); // for parsing Atom feed
 
     atomFeed.items?.forEach((item) {
-      _save(item, source);
+      _save(item, source.name);
     });
   }
 
@@ -56,6 +53,10 @@ class FeedProvider {
 
   void toggleFavorite(FeedItem item) {
     db.toggleFavorite(item.copyWith(isFav: !item.isFav));
+  }
+
+  void toggleSource(FeedSource source) {
+    db.toggleSource(source.copyWith(enabled: !source.enabled));
   }
 }
 
