@@ -17,10 +17,12 @@ class DetailPage extends HookWidget {
   Widget build(BuildContext context) {
     var provider = context.read<FeedProvider>();
 
-    var itemStream = useMemoized(() => provider.db.watchFeedItem(data));
-    var itemChanges = useStream(itemStream);
-    var htmlFetch = useMemoized(() => bonappetitRecipeFetch(data.item.link));
-    var html = useFuture(htmlFetch);
+    var itemChanges = useStream(
+      useMemoized(() => provider.db.watchFeedItem(data)),
+    );
+    var html = useFuture(
+      useMemoized(() => bonappetitRecipeFetch(data.item.link)),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -49,11 +51,12 @@ class DetailPage extends HookWidget {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16.0),
-              child: html.hasData
+              child: html.hasData && html.data?.isNotEmpty == true
                   ? SingleChildScrollView(
                       child: HtmlWidget(
-                      html.data!,
-                    ))
+                        html.data!,
+                      ),
+                    )
                   : Text(data.item.description),
             ),
           ),
