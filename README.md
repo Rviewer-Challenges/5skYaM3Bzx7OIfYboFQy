@@ -7,6 +7,34 @@ An Android|iOS|Web|macOS|Linux app that fetch news and recipies about cooking an
 
 ![One Code To Rule Them All](/screenshots/one4all.png)
 
+# Try it Yourself
+
+You can test the web version [here](https://62e25bbfb7b3a76f0d2a5027--stately-tarsier-2700c4.netlify.app/#/)
+
+Or you can build and test it following these steps:
+
+* Install [Flutter](https://docs.flutter.dev/get-started/install)
+* Open a Terminal in the project directory
+* Fetch project dependencies `flutter pub get`
+* Run `flutter devices` to check available platforms. If you want to run the app in Android or iOS, you should start the Emulator/Simulator first.
+
+```
+➜  cookgator git:(devel) flutter devices
+2 connected devices:
+
+macOS (desktop) • macos  • darwin-x64     • macOS 12.4 21F79 darwin-x64
+Chrome (web)    • chrome • web-javascript • Google Chrome 103.0.5060.134
+```
+
+* Start the app by running `flutter run -d <device>`, where device is the second column of the output in the previous step.
+e.g. for web, just run `flutter run -d chrome`
+
+## Persistency on Web
+
+Dirft ORM uses a local web database to store the data. This database relies on the `host:port` combination and because flutter starts on a random port, starting the app at different times can cause saved data (such as bookmarks) to be lost.
+
+To avoid this, you can fix the port passing `--web-port=12345` to the `flutter run` command
+
 # RSS reader
 
 Are you able to build the best RSS reader?
