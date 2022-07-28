@@ -68,7 +68,7 @@ class MyDatabase extends _$MyDatabase {
     return delete(feedItems).go();
   }
 
-  Future<List<FeedItemWithSource>> newestFeedItems(bool onlyFavorite) async {
+  Stream<List<FeedItemWithSource>> newestFeedItems(bool onlyFavorite) {
     var query = select(feedItems);
     if (onlyFavorite) {
       query = query..where((tbl) => tbl.isFav.equalsExp(const Constant(true)));
@@ -84,13 +84,14 @@ class MyDatabase extends _$MyDatabase {
     ])
       ..where(feedSources.enabled.equals(true));
 
-    var typedResultList = await join.get();
-    return typedResultList.map((row) {
-      return FeedItemWithSource(
-        row.readTable(feedItems),
-        row.readTable(feedSources),
-      );
-    }).toList();
+    return join.watch().map((rows) {
+      return rows.map((row) {
+        return FeedItemWithSource(
+          row.readTable(feedItems),
+          row.readTable(feedSources),
+        );
+      }).toList();
+    });
   }
 
   Stream<List<FeedSource>> getSources() {

@@ -1,8 +1,10 @@
 import 'package:cookgator/models/feed_item_with_source.dart';
 import 'package:cookgator/providers/feed_provider.dart';
+import 'package:cookgator/scrappers/bonappetit_recipe.dart';
 import 'package:cookgator/ui/fav_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,7 +17,10 @@ class DetailPage extends HookWidget {
   Widget build(BuildContext context) {
     var provider = context.read<FeedProvider>();
 
-    var itemChanges = useStream(provider.db.watchFeedItem(data));
+    var itemStream = useMemoized(() => provider.db.watchFeedItem(data));
+    var itemChanges = useStream(itemStream);
+    var htmlFetch = useMemoized(() => bonappetitRecipeFetch(data.item.link));
+    var html = useFuture(htmlFetch);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +49,12 @@ class DetailPage extends HookWidget {
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16.0),
-              child: Text(data.item.description),
+              child: html.hasData
+                  ? SingleChildScrollView(
+                      child: HtmlWidget(
+                      html.data!,
+                    ))
+                  : Text(data.item.description),
             ),
           ),
           Center(

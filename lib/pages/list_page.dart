@@ -17,7 +17,10 @@ class ListPage extends HookWidget {
   Widget build(BuildContext context) {
     var provider = context.watch<FeedProvider>();
     var onlyFavorite = useState(false);
-    var entries = useFuture(provider.db.newestFeedItems(onlyFavorite.value));
+    var entriesFuture = useMemoized(
+        () => provider.db.newestFeedItems(onlyFavorite.value),
+        [onlyFavorite.value]);
+    var entries = useStream(entriesFuture);
     useOnAppLifecycleStateChange((previous, current) {
       if (current == AppLifecycleState.resumed) {
         provider.refresh();
