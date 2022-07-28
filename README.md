@@ -33,7 +33,7 @@ e.g. for web, just run `flutter run -d chrome`
 
 Dirft ORM uses a local web database to store the data. This database relies on the `host:port` combination and because flutter starts on a random port, starting the app at different times can cause saved data (such as bookmarks) to be lost.
 
-To avoid this, you can fix the port passing `--web-port=12345` to the `flutter run` command
+To avoid this, you can set a fixed port passing `--web-port=12345` to the `flutter run` command
 
 # RSS reader
 
