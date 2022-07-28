@@ -24,21 +24,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    context.read<FeedProvider>();
+    var themeProvider = context.watch<ThemeProvider>();
 
-    return Consumer<ThemeProvider>(
-      builder: (_, ThemeProvider provider, __) {
-        return MaterialApp(
-          title: 'Food Aggregator',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-          ),
-          darkTheme: ThemeData.dark(),
-          themeMode: provider.current,
-          home: const ListPage(title: 'Food Aggregator'),
-        );
-      },
+    return MaterialApp(
+      title: 'Food Aggregator',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+      ),
+      darkTheme: ThemeData.dark(),
+      themeMode: themeProvider.current,
+      home: const ListPage(title: 'Food Aggregator'),
     );
   }
 }

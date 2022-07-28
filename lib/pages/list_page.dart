@@ -67,6 +67,10 @@ class ListPage extends HookWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: FeedItemView(
               item: item,
+              onLiked: (item) {
+                var provider = context.read<FeedProvider>();
+                provider.toggleFavorite(item.item);
+              },
               onTap: (item) {
                 Navigator.push(
                   context,

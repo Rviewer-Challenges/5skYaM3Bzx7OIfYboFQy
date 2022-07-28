@@ -1,17 +1,18 @@
-import 'package:cookgator/database/database.dart';
 import 'package:cookgator/models/feed_item_with_source.dart';
-import 'package:cookgator/providers/feed_provider.dart';
 import 'package:cookgator/ui/fav_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class FeedItemView extends StatelessWidget {
   final FeedItemWithSource item;
+  final Function(FeedItemWithSource) onLiked;
   final Function(FeedItemWithSource) onTap;
 
-  const FeedItemView({Key? key, required this.item, required this.onTap})
-      : super(key: key);
+  const FeedItemView({
+    Key? key,
+    required this.item,
+    required this.onTap,
+    required this.onLiked,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +29,7 @@ class FeedItemView extends StatelessWidget {
               subtitle: Text(item.subheading),
               trailing: InkWell(
                 onTap: () {
-                  var provider = context.read<FeedProvider>();
-                  provider.toggleFavorite(item.item);
+                  onLiked(item);
                 },
                 child: FavIcon(isFav: item.item.isFav),
               ),

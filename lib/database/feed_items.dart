@@ -1,4 +1,3 @@
-import 'package:cookgator/database/database.dart';
 import 'package:cookgator/database/feed_source.dart';
 import 'package:drift/drift.dart';
 
