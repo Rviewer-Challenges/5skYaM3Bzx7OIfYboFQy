@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:cookgator/hooks/interval_hook.dart';
 import 'package:cookgator/models/feed_item_with_source.dart';
 import 'package:cookgator/pages/detail_page.dart';
 import 'package:cookgator/providers/feed_provider.dart';
 import 'package:cookgator/pages/settings_page.dart';
 import 'package:cookgator/ui/fav_icon.dart';
 import 'package:cookgator/ui/feed_item_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +27,11 @@ class ListPage extends HookWidget {
     var entries = useStream(entriesFuture);
     useOnAppLifecycleStateChange((previous, current) {
       if (current == AppLifecycleState.resumed) {
+        provider.refresh();
+      }
+    });
+    eveyMinute(() {
+      if (kIsWeb || Platform.isMacOS || Platform.isLinux) {
         provider.refresh();
       }
     });
