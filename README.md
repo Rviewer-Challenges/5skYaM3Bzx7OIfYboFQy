@@ -9,7 +9,7 @@ An Android|iOS|Web|macOS|Linux app that fetch news and recipies about cooking an
 
 # Try it Yourself
 
-You can test the web version [here](https://62e25bbfb7b3a76f0d2a5027--stately-tarsier-2700c4.netlify.app/#/)
+You can test the web version [here](https://stately-tarsier-2700c4.netlify.app/)
 
 Or you can build and test it following these steps:
 
