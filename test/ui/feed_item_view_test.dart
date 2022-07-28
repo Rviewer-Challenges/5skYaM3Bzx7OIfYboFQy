@@ -34,7 +34,7 @@ void main() {
   final widget = MaterialApp(
     home: Material(
       child: FeedItemView(
-        item: itemWithSource,
+        data: itemWithSource,
         onTap: onTapMock,
         onLiked: onLikedMock,
       ),

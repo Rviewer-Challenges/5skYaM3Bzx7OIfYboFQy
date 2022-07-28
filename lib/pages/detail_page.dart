@@ -7,44 +7,44 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends HookWidget {
-  final FeedItemWithSource item;
+  final FeedItemWithSource data;
 
-  const DetailPage({Key? key, required this.item}) : super(key: key);
+  const DetailPage({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var provider = context.read<FeedProvider>();
 
-    var itemChanges = useStream(provider.db.watchFeedItem(item));
+    var itemChanges = useStream(provider.db.watchFeedItem(data));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(item.subheading),
+        title: Text(data.subheading),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            title: Text(item.heading),
+            title: Text(data.heading),
             trailing: InkWell(
               onTap: () {
                 var provider = context.read<FeedProvider>();
-                provider.toggleFavorite(itemChanges.data ?? item.item);
+                provider.toggleFavorite(itemChanges.data ?? data.item);
               },
-              child: FavIcon(isFav: itemChanges.data?.isFav ?? item.item.isFav),
+              child: FavIcon(isFav: itemChanges.data?.isFav ?? data.item.isFav),
             ),
           ),
           SizedBox(
             height: 200.0,
             child: Ink.image(
-              image: item.cardImage,
+              image: data.cardImage,
               fit: BoxFit.cover,
             ),
           ),
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(16.0),
-              child: Text(item.item.description),
+              child: Text(data.item.description),
             ),
           ),
           Center(
@@ -57,7 +57,7 @@ class DetailPage extends HookWidget {
             padding: const EdgeInsets.all(16.0),
             alignment: Alignment.centerLeft,
             child: Text(
-              item.supportingText,
+              data.supportingText,
               style: Theme.of(context).textTheme.caption,
             ),
           ),
@@ -67,8 +67,8 @@ class DetailPage extends HookWidget {
   }
 
   Future<void> _launchUrl() async {
-    if (!await launchUrl(Uri.parse(item.item.link))) {
-      throw 'Could not launch ${item.item.link}';
+    if (!await launchUrl(Uri.parse(data.item.link))) {
+      throw 'Could not launch ${data.item.link}';
     }
   }
 }

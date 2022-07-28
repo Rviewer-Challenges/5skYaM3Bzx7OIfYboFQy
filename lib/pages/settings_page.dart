@@ -17,7 +17,7 @@ class SettingsPage extends HookWidget {
 
     return Column(
       children: [
-        ..._sources(sources, feedProvider, context),
+        ..._feedSources(sources, feedProvider, context),
         Text(
           "Settings",
           style: Theme.of(context).textTheme.headline6,
@@ -40,7 +40,7 @@ class SettingsPage extends HookWidget {
     );
   }
 
-  List<Widget> _sources(
+  List<Widget> _feedSources(
     AsyncSnapshot<List<FeedSource>> sources,
     FeedProvider feedProvider,
     BuildContext context,

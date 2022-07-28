@@ -66,7 +66,7 @@ class ListPage extends HookWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: FeedItemView(
-              item: item,
+              data: item,
               onLiked: (item) {
                 var provider = context.read<FeedProvider>();
                 provider.toggleFavorite(item.item);
@@ -76,7 +76,7 @@ class ListPage extends HookWidget {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => DetailPage(
-                      item: item,
+                      data: item,
                     ),
                   ),
                 );
